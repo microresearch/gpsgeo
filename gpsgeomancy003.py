@@ -2,13 +2,28 @@ import sys
 import argparse
 from pprint import pprint
 import numpy as np
-import pylab as plt
 import ephem
 import datetime
 import urllib2
 import random
 import time
+import  pytz 
 from math import pi
+from yahoo_finance import Share
+
+from time import sleep
+import os
+import socket
+import logging
+
+# uncomment
+
+#import req_admxi
+#from ib.ext.Contract import Contract
+#from ib.ext.Order import Order
+#from ib.opt import ibConnection, message
+#import mysql.connector
+
 
 company_dict={'Fire': ['ACN', 'ACE', 'ATVI', 'ADBE', 'AFL', 'AMG', 'AKAM', 'ADS', 'ALL', 'GOOGL', 'GOOG', 'ALTR', 'AXP', 'AIG', 'AMT', 'AMP', 'ADI', 'AON', 'AIV', 'AAPL', 'AMAT', 'AIZ', 'ADSK', 'ADP', 'AVGO', 'AVB', 'BAC', 'BK', 'BBT', 'BRK-B', 'BLK', 'HRB', 'BXP', 'BRCM', 'CA', 'COF', 'CBG', 'SCHW', 'CB', 'CINF', 'CSCO', 'C', 'CTXS', 'CME', 'CTSH', 'CMA', 'CSC', 'CCI', 'DFS', 'ETFC', 'EBAY', 'EA', 'EMC', 'EFX', 'EQIX', 'EQR', 'ESS', 'FFIV', 'FB', 'FIS', 'FITB', 'FSLR', 'FISV', 'BEN', 'GGP', 'GNW', 'GS', 'HRS', 'HIG', 'HCP', 'HPQ', 'HST', 'HCBK', 'HBAN', 'INTC', 'ICE', 'IBM', 'INTU', 'IVZ', 'JPM', 'JNPR', 'KEY', 'KIM', 'KLAC', 'LRCX', 'LM', 'LUK', 'LNC', 'LLTC', 'L', 'MTB', 'MAC', 'MMC', 'MA', 'MHFI', 'MET', 'MCHP', 'MU', 'MSFT', 'MCO', 'MS', 'MSI', 'NDAQ', 'NAVI', 'NTAP', 'NFLX', 'NTRS', 'NVDA', 'ORCL', 'PAYX', 'PYPL', 'PBCT', 'PCL', 'PNC', 'PFG', 'PGR', 'PLD', 'PRU', 'PSA', 'QRVO', 'QCOM', 'O', 'RHT', 'RF', 'CRM', 'SNDK', 'STX', 'SPG', 'SWKS', 'SLG', 'STT', 'STI', 'SYMC', 'TROW', 'TEL', 'TDC', 'TXN', 'TRV', 'TMK', 'TSS', 'USB', 'UNM', 'VTR', 'VRSN', 'V', 'VNO', 'WFC', 'HCN', 'WDC', 'WU', 'WY', 'XRX', 'XLNX', 'XL', 'YHOO', 'ZION'], 'Earth': ['MMM', 'ADT', 'AES', 'GAS', 'APD', 'ARG', 'AA', 'ALLE', 'AEE', 'AAL', 'AEP', 'AME', 'APH', 'APC', 'APA', 'AVY', 'BHI', 'BLL', 'BA', 'CHRW', 'COG', 'CAM', 'CAT', 'CNP', 'CF', 'CHK', 'CVX', 'XEC', 'CTAS', 'CMS', 'CPGX', 'COP', 'CNX', 'ED', 'GLW', 'CSX', 'CMI', 'DHR', 'DE', 'DAL', 'DVN', 'DO', 'D', 'DOV', 'DOW', 'DTE', 'DD', 'DUK', 'DNB', 'EMN', 'ETN', 'ECL', 'EIX', 'EMR', 'ESV', 'ETR', 'EOG', 'EQT', 'ES', 'EXC', 'EXPD', 'XOM', 'FAST', 'FDX', 'FE', 'FLIR', 'FLS', 'FLR', 'FMC', 'FTI', 'FCX', 'GD', 'GE', 'GWW', 'HAL', 'HP', 'HES', 'HON', 'ITW', 'IR', 'IP', 'IFF', 'IRM', 'JEC', 'JBHT', 'KSU', 'KMI', 'LLL', 'LEG', 'LMT', 'LYB', 'MRO', 'MPC', 'MLM', 'MAS', 'WRK', 'MON', 'MOS', 'MUR', 'NOV', 'NFX', 'NEM', 'NEE', 'NLSN', 'NI', 'NBL', 'NSC', 'NOC', 'NRG', 'NUE', 'OXY', 'OKE', 'OI', 'PCAR', 'PH', 'PNR', 'POM', 'PCG', 'PSX', 'PNW', 'PXD', 'PBI', 'PPG', 'PPL', 'PX', 'PCP', 'PEG', 'PWR', 'RRC', 'RTN', 'RSG', 'RHI', 'ROK', 'COL', 'ROP', 'R', 'SCG', 'SLB', 'SEE', 'SRE', 'SHW', 'SIAL', 'SO', 'LUV', 'SWN', 'SE', 'SRCL', 'TE', 'TSO', 'TXT', 'RIG', 'TYC', 'UNP', 'UAL', 'UPS', 'URI', 'UTX', 'VLO', 'VRSK', 'VMC', 'WM', 'WMB', 'WEC', 'XEL', 'XYL'], 'Water': ['ABT', 'ABBV', 'AAP', 'AET', 'A', 'AGN', 'ALXN', 'MO', 'AMZN', 'ABC', 'AMGN', 'ADM', 'AN', 'AZO', 'BCR', 'BXLT', 'BAX', 'BDX', 'BBBY', 'BBY', 'BIIB', 'BWA', 'BSX', 'BMY', 'BF-B', 'CVC', 'CPB', 'CAH', 'HSIC', 'KMX', 'CCL', 'CBS', 'CELG', 'CERN', 'CMG', 'CI', 'CLX', 'COH', 'KO', 'CCE', 'CL', 'CMCSA', 'CMCSK', 'CAG', 'STZ', 'COST', 'CVS', 'DHI', 'DRI', 'DVA', 'DLPH', 'XRAY', 'DISCA', 'DISCK', 'DG', 'DLTR', 'DPS', 'EW', 'ENDP', 'EL', 'EXPE', 'ESRX', 'F', 'FOSL', 'GME', 'GPS', 'GRMN', 'GIS', 'GM', 'GPC', 'GILD', 'GT', 'HBI', 'HOG', 'HAR', 'HAS', 'HCA', 'HD', 'HRL', 'HUM', 'IPG', 'ISRG', 'JNJ', 'JCI', 'K', 'GMCR', 'KMB', 'KSS', 'KHC', 'KR', 'LB', 'LH', 'LEN', 'LLY', 'LOW', 'M', 'MNK', 'MAR', 'MAT', 'MKC', 'MCD', 'MCK', 'MJN', 'MDT', 'MRK', 'KORS', 'MHK', 'TAP', 'MDLZ', 'MNST', 'MYL', 'NWL', 'NWSA', 'NWS', 'NKE', 'JWN', 'ORLY', 'OMC', 'PDCO', 'PEP', 'PKI', 'PRGO', 'PFE', 'PM', 'RL', 'PCLN', 'PG', 'PHM', 'PVH', 'DGX', 'REGN', 'RAI', 'ROST', 'RCL', 'SNI', 'SIG', 'SJM', 'SNA', 'STJ', 'SWK', 'SPLS', 'SBUX', 'HOT', 'SYK', 'SYY', 'TGT', 'TGNA', 'THC', 'HSY', 'TMO', 'TIF', 'TWX', 'TWC', 'TJX', 'TSCO', 'TRIP', 'FOXA', 'FOX', 'TSN', 'UA', 'UNH', 'UHS', 'URBN', 'VFC', 'VAR', 'VRTX', 'VIAB', 'WMT', 'WBA', 'DIS', 'WAT', 'ANTM', 'WHR', 'WFM', 'WYN', 'WYNN', 'YUM', 'ZBH', 'ZTS'], 'Air': ['T', 'CTL', 'FTR', 'LVLT', 'VZ']}
 
@@ -315,6 +330,14 @@ def drawit(listere):
                 print " O    ",
         print
 
+def drawfig(body):
+    for part in body:
+        if part==1:
+            print "O O   ",
+        else:
+            print " O    ",
+        print
+
 numeral=0
 
 def lookfig(figure):
@@ -322,7 +345,9 @@ def lookfig(figure):
     global numeral
     key=''.join(str(e) for e in figure)
     numeral+=1
-    return (' '.join((roman[numeral]+". GD:",crowley[numeral]+".",figdict[key][0],figdict[key][2],figdict[key][5])))
+    #    return (' '.join((roman[numeral]+". GD:",crowley[numeral]+".",figdict[key][0],figdict[key][2],figdict[key][5])))
+#    return (' '.join((roman[numeral]+". ",figdict[key][0],": ",figdict[key][2],figdict[key][5],figdict[key][4])))
+    return (' '.join((figdict[key][0],": ",figdict[key][2],figdict[key][5],figdict[key][4])))
 
 portfolio={}
 portfolio.setdefault("Earth",{})
@@ -330,7 +355,71 @@ portfolio.setdefault("Fire",{})
 portfolio.setdefault("Air",{})
 portfolio.setdefault("Water",{})
 
-#portfolio={'Earth': {'NSC': 2, 'EOG': 11, 'EXC': 6, 'WM': 6, 'SRCL': 8, 'DVN': 10, 'JBHT': 8, 'BA': 5, 'ALLE': 6, 'FLIR': 3, 'UAL': 6, 'LYB': 6, 'RIG': 8, 'SIAL': 3, 'WEC': 6, 'HAL': 9, 'D': 6, 'AEP': 1, 'CHK': 2, 'URI': 7, 'GE': 10, 'GD': 9, 'WMB': 5, 'MAS': 6, 'TE': 8, 'VRSK': 1, 'OI': 7, 'NLSN': 10, 'LEG': 2, 'EQT': 1, 'TYC': 4, 'RHI': 2, 'APH': 5, 'APC': 10, 'APA': 11, 'XYL': 4, 'APD': 7, 'KSU': 3, 'TSO': 3, 'AES': 5, 'CMI': 5, 'PCP': 6, 'EMN': 5, 'DTE': 3, 'IFF': 3, 'AEE': 3, 'CTAS': 5, 'EMR': 3, 'FDX': 4, 'CMS': 9, 'PCG': 8, 'ROK': 5, 'VLO': 8, 'ETN': 5, 'SCG': 8, 'RTN': 5, 'AME': 9, 'COL': 2, 'LLL': 8, 'ROP': 3, 'PH': 9, 'OXY': 7, 'SHW': 5, 'ED': 5, 'BLL': 6, 'CSX': 8, 'FTI': 5, 'MLM': 6, 'PBI': 7, 'UPS': 6, 'ES': 4, 'NFX': 6, 'MPC': 7, 'MOS': 5, 'NOC': 8, 'PSX': 10, 'OKE': 6, 'MON': 7, 'NOV': 8, 'ETR': 9, 'COP': 3, 'HES': 5, 'NEM': 9, 'LUV': 3, 'MUR': 6, 'NEE': 8, 'KMI': 6, 'GWW': 6, 'FE': 4, 'COG': 5, 'PEG': 5, 'DOV': 7, 'DOW': 8, 'GLW': 8, 'NI': 5, 'FCX': 2, 'ECL': 10, 'RRC': 11, 'FAST': 8, 'SEE': 4, 'EIX': 6, 'NUE': 6, 'FLS': 4, 'EXPD': 5, 'UNP': 4, 'ADT': 13, 'FLR': 5, 'DNB': 7, 'NBL': 12, 'CF': 5, 'JEC': 11, 'R': 11, 'FMC': 5, 'AVY': 5, 'CHRW': 3, 'HP': 4, 'XEC': 6, 'XEL': 5, 'LMT': 6, 'VMC': 11, 'MMM': 4, 'SO': 6, 'CPGX': 6, 'ITW': 4, 'SE': 6, 'DO': 4, 'PNR': 4, 'CVX': 7, 'SWN': 2, 'AAL': 11, 'DD': 4, 'DE': 8, 'CAT': 5, 'DUK': 5, 'CAM': 7, 'PCAR': 8, 'PPG': 4, 'DAL': 9, 'SRE': 7, 'GAS': 6, 'PPL': 7, 'POM': 6, 'TXT': 6, 'PXD': 3, 'AA': 4, 'ESV': 4, 'CNP': 10, 'HON': 11, 'IP': 4, 'IR': 2, 'CNX': 13, 'WRK': 6, 'IRM': 6, 'UTX': 7, 'XOM': 6, 'DHR': 4, 'SLB': 10, 'BHI': 6, 'PWR': 3, 'RSG': 6, 'NRG': 4, 'PNW': 6, 'MRO': 6, 'ARG': 6, 'PX': 7}}
+def exec_trade(self, trade_json):
+    server = socket.create_connection(self.trade_serv)
+    server.settimeout(10)  # 10 seconds
+    msg = trade_json.encode('utf-8')
+    try:
+        server.sendall(msg)
+        resp = server.recv(1024)
+        logging.debug(("reply:", resp))
+    except socket.timeout:
+        logging.debug("Order service timed out! Try again later.")
+    server.close()
+
+
+def exec_buy(self, shares, price):
+    # actually buy shares on the market.
+    trade = {"pass_client": pass_key,
+             "contract": {"m_symbol": ticker,
+                          "m_secType": "STK",
+                          "m_exchange": "SMART",
+                          "m_currency": "USD"
+                      },
+                 "order": {"m_action": "BUY",
+                           "m_totalQuantity": shares,
+                           "m_orderType": "LMT",
+                           "m_lmtPrice": float(price),
+                           "m_tif": "DAY",
+                           "m_goodAfterTime": "",
+                           "m_goodTillDate": ""
+                       }
+                 }
+    trade_json = json.dumps(trade)
+    logging.debug("buying", shares, "shares at", price)
+    exec_trade(trade_json)
+
+def exec_sell(self, shares, price):
+    # actually sell on the market
+    trade = {"pass_client": pass_key,
+             "contract": {"m_symbol": ticker,
+                          "m_secType": "STK",
+                          "m_exchange": "SMART",
+                          "m_currency": "USD"
+                      },
+                 "order": {"m_action": "SELL",
+                           "m_totalQuantity": shares,
+                           "m_orderType": "LMT",
+                           "m_lmtPrice": float(price),
+                           "m_tif": "DAY",
+                           "m_goodAfterTime": "",
+                           "m_goodTillDate": ""
+                       }
+                 }
+    trade_json = json.dumps(trade)
+    logging.debug("selling", shares, "shares at", price)
+    exec_trade(trade_json)
+
+def update(self):
+    cash = req_admxi.get_cash(ALGO)
+    portfolio = req_admxi.get_portfolio(ALGO)
+    # NOTE: this assumes we only have 1 issue in portfolio
+    if len(portfolio) > 0:
+        shares = int(portfolio[0][4])
+        share.refresh()
+        price = float(share.get_price())
+        push_price(price)
+        update_nav(price)
 
 
 def whattodo(figure):
@@ -352,8 +441,12 @@ def whattodo(figure):
         else:
             portfolio.setdefault(elemental, {})[whichone] = 1
         print "Buy", whichone
+        bought=Share(whichone)
+        print "Price", bought.get_price()
 
-    if action=="sell":
+# do buy action
+
+    elif action=="sell":
         #choose a random from elemental dict
         if portfolio[elemental]:
             print portfolio
@@ -362,10 +455,25 @@ def whattodo(figure):
             if portfolio[elemental][whichone]>0:
                 portfolio[elemental][whichone]-=1
                 print "Sell", whichone
+                sold=Share(whichone)
+                print "Price", sold.get_price()
+            else:
+                print "No action taken"
+
+# do sell section
 
 #    print portfolio    
 
     return (' '.join((action,whichone)))
+
+def market_open():
+    # returns True if NYSE is open (this does not work for holidays)
+    ctime = datetime.datetime.now(pytz.timezone('US/Eastern'))
+    chour = ctime.hour + (ctime.minute / 60.0)
+    if (ctime.weekday() < 5) and (chour < 16) and (chour > 9.5):
+        return True
+    else:
+        return False
 
 
 def main():
@@ -374,45 +482,56 @@ def main():
     satdict = {}
     # What is Lat long of US stock exchange: 40.714353, -74.005973
     # Berlin here: 
-    berlin = ephem.Observer()
-    berlin.lat = np.deg2rad(52.5511)
-    berlin.long = np.deg2rad(13.19921)
+    nyse = ephem.Observer()
+    nyse.lat = np.deg2rad(40.714353)
+    nyse.long = np.deg2rad(-74.005973)
 
-    #consult at a specific asuspicious time: and pull this out into function...
-    for x in range(10000):
-        berlin.date = datetime.datetime.now()
-        while ("West" not in str(satdict.values()) and "East" not in str(satdict.values()) and "North" not in str(satdict.values()) and "South" not in str(satdict.values())):
-            satdict = makesatdict(berlin)
-            satdict = directionclassify(satdict)
-            chosenfour = selectsats(satdict)
-            print "waitin"
 
-        mlist=domothers(chosenfour)
-        dlist=dodaughters(mlist)
-        nlist=donephews(mlist,dlist)
-        wlist=dowitnesses(nlist)
-        jlist=dojudge(wlist)
-        rlist=dorec(jlist,mlist)
-        allfigures=mlist+dlist+nlist
-        # add 1st 12 figures total 
+    #consult at specific asuspicious time which is opening!: and pull this out into function...
 
-        total=0
-        for m in mlist: # more elegant?
-            for mm in m:
-                total=total+mm
-        for m in dlist:
-            for mm in m:
-                total=total+mm
-        for m in nlist:
-            for mm in m:
-                total=total+mm
-        # divide by 12 and note remainder
-        # gives number of house for fortune
-        house=total%12
-        chosen=allfigures[house]
-#        time.sleep(60)# AUSPICIOUS?
-        whattodo(chosen)
+    # check that market is open!
 
+    while True:
+    # wait for stock exchange to open 
+        if market_open():
+            nyse.date = datetime.datetime.now(pytz.timezone('US/Eastern')) # offset okay
+            print nyse.date
+            while ("West" not in str(satdict.values()) and "East" not in str(satdict.values()) and "North" not in str(satdict.values()) and "South" not in str(satdict.values())):
+                satdict = makesatdict(nyse)
+                satdict = directionclassify(satdict)
+                chosenfour = selectsats(satdict)
+                #            print "waitin"
+
+            mlist=domothers(chosenfour)
+            dlist=dodaughters(mlist)
+            nlist=donephews(mlist,dlist)
+            wlist=dowitnesses(nlist)
+            jlist=dojudge(wlist)
+            rlist=dorec(jlist,mlist)
+            allfigures=mlist+dlist+nlist
+            # add 1st 12 figures total 
+            total=0
+            for m in mlist: # more elegant?
+                for mm in m:
+                    total=total+mm
+                    for m in dlist:
+                        for mm in m:
+                            total=total+mm
+                    for m in nlist:
+                        for mm in m:
+                            total=total+mm
+                            # divide by 12 and note remainder SKINNER p223
+                            # gives number of house for fortune
+                            house=total%12
+                            chosen=allfigures[house]
+
+            # print the chosen figure and its interpretation
+            drawfig(chosen)
+            print lookfig(chosen)
+
+            # buy or sell
+            whattodo(chosen)
+        
 
 
 if __name__ == '__main__':
