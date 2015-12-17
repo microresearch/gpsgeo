@@ -485,7 +485,7 @@ def market_open():
 def main():
     """
     """
-    satdict = {}
+    upped=0;
     # What is Lat long of US stock exchange: 40.714353, -74.005973
     # Berlin here: 
     nyse = ephem.Observer()
@@ -496,14 +496,21 @@ def main():
 
     while True:
     # wait for stock exchange to open 
-        if market_open():
-            nyse.date = datetime.datetime.now(pytz.timezone('US/Eastern')) # offset okay
+#        if market_open():
+        if True:
+            upped+=10
+            date = datetime.datetime.now(pytz.timezone('US/Eastern')) # offset okay
+            date+= datetime.timedelta(0,upped)
+            nyse.date=date
             print nyse.date
-            while ("West" not in str(satdict.values()) and "East" not in str(satdict.values()) and "North" not in str(satdict.values()) and "South" not in str(satdict.values())):
+            # we need to clear satdict
+            satdict = {}
+            while ("West" not in str(satdict.values()) and "East" not in str(satdict.values()) and "North" not in str(satdict.values()) and "South" not in str(satdict.values())): 
+                satdict = {}
                 satdict = makesatdict(nyse)
                 satdict = directionclassify(satdict)
                 chosenfour = selectsats(satdict)
-                #            print "waitin"
+                #            print "waitin" - why does this fail to get all NSEW
 
             mlist=domothers(chosenfour)
             dlist=dodaughters(mlist)
