@@ -16,7 +16,7 @@ import os
 import socket
 import logging
 
-# uncomment
+# uncomment below
 
 #import req_admxi
 #from ib.ext.Contract import Contract
