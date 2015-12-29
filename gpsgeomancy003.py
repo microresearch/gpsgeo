@@ -375,7 +375,7 @@ def exec_trade(trade_json):
 
 def exec_buy(whichone):
     # actually buy shares on the market.
-    trade = {"pass_client": u"458ç(_MdZTb25qM!",
+    trade = {"pass_client": u"xxx"
              "contract": {"m_symbol": whichone,
                           "m_secType": "STK",
                           "m_exchange": "SMART",
@@ -395,7 +395,7 @@ def exec_buy(whichone):
 
 def exec_sell(whichone):
     # actually sell on the market
-    trade = {"pass_client": u"458ç(_MdZTb25qM!",
+    trade = {"pass_client": u"xxx",
              "contract": {"m_symbol": whichone,
                           "m_secType": "STK",
                           "m_exchange": "SMART",
