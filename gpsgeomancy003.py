@@ -16,6 +16,8 @@ import os
 import socket
 import logging
 
+# TODO: buying, selling and accounting!
+
 # uncomment below
 
 #import req_admxi
@@ -370,18 +372,17 @@ def exec_trade(trade_json):
     server.close()
 
 
-def exec_buy(whichone, shares, price):
+def exec_buy(whichone):
     # actually buy shares on the market.
-    trade = {"pass_client": pass_key,
+    trade = {"pass_client": "458ç(_MdZTb25qM!",
              "contract": {"m_symbol": whichone,
                           "m_secType": "STK",
                           "m_exchange": "SMART",
                           "m_currency": "USD"
                       },
                  "order": {"m_action": "BUY",
-                           "m_totalQuantity": shares,
-                           "m_orderType": "LMT",
-                           "m_lmtPrice": float(price), # what is price?
+                           "m_totalQuantity": 1,
+                           "m_orderType": "MKT",
                            "m_tif": "DAY",
                            "m_goodAfterTime": "",
                            "m_goodTillDate": ""
@@ -391,7 +392,7 @@ def exec_buy(whichone, shares, price):
     logging.debug("buying", shares, "shares at", price)
     exec_trade(trade_json)
 
-def exec_sell(whichone,shares, price):
+def exec_sell(whichone):
     # actually sell on the market
     trade = {"pass_client": pass_key,
              "contract": {"m_symbol": whichone,
@@ -400,9 +401,8 @@ def exec_sell(whichone,shares, price):
                           "m_currency": "USD"
                       },
                  "order": {"m_action": "SELL",
-                           "m_totalQuantity": shares,
-                           "m_orderType": "LMT",
-                           "m_lmtPrice": float(price),
+                           "m_totalQuantity": 1,
+                           "m_orderType": "MKT",
                            "m_tif": "DAY",
                            "m_goodAfterTime": "",
                            "m_goodTillDate": ""
@@ -412,17 +412,9 @@ def exec_sell(whichone,shares, price):
     logging.debug("selling", shares, "shares at", price)
     exec_trade(trade_json)
 
-def update(self):
+def update():
     cash = req_admxi.get_cash(ALGO)
     portfolio = req_admxi.get_portfolio(ALGO)
-    # NOTE: this assumes we only have 1 issue in portfolio
-    if len(portfolio) > 0:
-        shares = int(portfolio[0][4])
-        share.refresh()
-        price = float(share.get_price())
-        push_price(price)
-        update_nav(price)
-
 
 def whattodo(figure):
     # convert list to string
@@ -445,10 +437,8 @@ def whattodo(figure):
         print "Buy", whichone
         bought=Share(whichone)
         print "Price", bought.get_price()
-
 # do buy action
-
-#exec_buy(whichone, 1, bought.get_price()):
+        exec_buy(whichone)
 
     elif action=="sell":
         #choose a random from elemental dict
@@ -461,15 +451,9 @@ def whattodo(figure):
                 print "Sell", whichone
                 sold=Share(whichone)
                 print "Price", sold.get_price()
+                exec_sell(whichone)
             else:
                 print "No action taken"
-
-# do sell action
-
-#exec_sell(whichone, 1, sold.get_price()):
-
-#    print portfolio    
-
     return (' '.join((action,whichone)))
 
 def market_open():
