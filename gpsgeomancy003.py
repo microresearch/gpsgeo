@@ -27,10 +27,10 @@ import req_admxi
 company_dict={'Fire': ['ACN', 'ACE', 'ATVI', 'ADBE', 'AFL', 'AMG', 'AKAM', 'ADS', 'ALL', 'GOOGL', 'GOOG', 'ALTR', 'AXP', 'AIG', 'AMT', 'AMP', 'ADI', 'AON', 'AIV', 'AAPL', 'AMAT', 'AIZ', 'ADSK', 'ADP', 'AVGO', 'AVB', 'BAC', 'BK', 'BBT', 'BRK-B', 'BLK', 'HRB', 'BXP', 'BRCM', 'CA', 'COF', 'CBG', 'SCHW', 'CB', 'CINF', 'CSCO', 'C', 'CTXS', 'CME', 'CTSH', 'CMA', 'CSC', 'CCI', 'DFS', 'ETFC', 'EBAY', 'EA', 'EMC', 'EFX', 'EQIX', 'EQR', 'ESS', 'FFIV', 'FB', 'FIS', 'FITB', 'FSLR', 'FISV', 'BEN', 'GGP', 'GNW', 'GS', 'HRS', 'HIG', 'HCP', 'HPQ', 'HST', 'HCBK', 'HBAN', 'INTC', 'ICE', 'IBM', 'INTU', 'IVZ', 'JPM', 'JNPR', 'KEY', 'KIM', 'KLAC', 'LRCX', 'LM', 'LUK', 'LNC', 'LLTC', 'L', 'MTB', 'MAC', 'MMC', 'MA', 'MHFI', 'MET', 'MCHP', 'MU', 'MSFT', 'MCO', 'MS', 'MSI', 'NDAQ', 'NAVI', 'NTAP', 'NFLX', 'NTRS', 'NVDA', 'ORCL', 'PAYX', 'PYPL', 'PBCT', 'PCL', 'PNC', 'PFG', 'PGR', 'PLD', 'PRU', 'PSA', 'QRVO', 'QCOM', 'O', 'RHT', 'RF', 'CRM', 'SNDK', 'STX', 'SPG', 'SWKS', 'SLG', 'STT', 'STI', 'SYMC', 'TROW', 'TEL', 'TDC', 'TXN', 'TRV', 'TMK', 'TSS', 'USB', 'UNM', 'VTR', 'VRSN', 'V', 'VNO', 'WFC', 'HCN', 'WDC', 'WU', 'WY', 'XRX', 'XLNX', 'XL', 'YHOO', 'ZION'], 'Earth': ['MMM', 'ADT', 'AES', 'GAS', 'APD', 'ARG', 'AA', 'ALLE', 'AEE', 'AAL', 'AEP', 'AME', 'APH', 'APC', 'APA', 'AVY', 'BHI', 'BLL', 'BA', 'CHRW', 'COG', 'CAM', 'CAT', 'CNP', 'CF', 'CHK', 'CVX', 'XEC', 'CTAS', 'CMS', 'CPGX', 'COP', 'CNX', 'ED', 'GLW', 'CSX', 'CMI', 'DHR', 'DE', 'DAL', 'DVN', 'DO', 'D', 'DOV', 'DOW', 'DTE', 'DD', 'DUK', 'DNB', 'EMN', 'ETN', 'ECL', 'EIX', 'EMR', 'ESV', 'ETR', 'EOG', 'EQT', 'ES', 'EXC', 'EXPD', 'XOM', 'FAST', 'FDX', 'FE', 'FLIR', 'FLS', 'FLR', 'FMC', 'FTI', 'FCX', 'GD', 'GE', 'GWW', 'HAL', 'HP', 'HES', 'HON', 'ITW', 'IR', 'IP', 'IFF', 'IRM', 'JEC', 'JBHT', 'KSU', 'KMI', 'LLL', 'LEG', 'LMT', 'LYB', 'MRO', 'MPC', 'MLM', 'MAS', 'WRK', 'MON', 'MOS', 'MUR', 'NOV', 'NFX', 'NEM', 'NEE', 'NLSN', 'NI', 'NBL', 'NSC', 'NOC', 'NRG', 'NUE', 'OXY', 'OKE', 'OI', 'PCAR', 'PH', 'PNR', 'POM', 'PCG', 'PSX', 'PNW', 'PXD', 'PBI', 'PPG', 'PPL', 'PX', 'PCP', 'PEG', 'PWR', 'RRC', 'RTN', 'RSG', 'RHI', 'ROK', 'COL', 'ROP', 'R', 'SCG', 'SLB', 'SEE', 'SRE', 'SHW', 'SIAL', 'SO', 'LUV', 'SWN', 'SE', 'SRCL', 'TE', 'TSO', 'TXT', 'RIG', 'TYC', 'UNP', 'UAL', 'UPS', 'URI', 'UTX', 'VLO', 'VRSK', 'VMC', 'WM', 'WMB', 'WEC', 'XEL', 'XYL'], 'Water': ['ABT', 'ABBV', 'AAP', 'AET', 'A', 'AGN', 'ALXN', 'MO', 'AMZN', 'ABC', 'AMGN', 'ADM', 'AN', 'AZO', 'BCR', 'BXLT', 'BAX', 'BDX', 'BBBY', 'BBY', 'BIIB', 'BWA', 'BSX', 'BMY', 'BF-B', 'CVC', 'CPB', 'CAH', 'HSIC', 'KMX', 'CCL', 'CBS', 'CELG', 'CERN', 'CMG', 'CI', 'CLX', 'COH', 'KO', 'CCE', 'CL', 'CMCSA', 'CMCSK', 'CAG', 'STZ', 'COST', 'CVS', 'DHI', 'DRI', 'DVA', 'DLPH', 'XRAY', 'DISCA', 'DISCK', 'DG', 'DLTR', 'DPS', 'EW', 'ENDP', 'EL', 'EXPE', 'ESRX', 'F', 'FOSL', 'GME', 'GPS', 'GRMN', 'GIS', 'GM', 'GPC', 'GILD', 'GT', 'HBI', 'HOG', 'HAR', 'HAS', 'HCA', 'HD', 'HRL', 'HUM', 'IPG', 'ISRG', 'JNJ', 'JCI', 'K', 'GMCR', 'KMB', 'KSS', 'KHC', 'KR', 'LB', 'LH', 'LEN', 'LLY', 'LOW', 'M', 'MNK', 'MAR', 'MAT', 'MKC', 'MCD', 'MCK', 'MJN', 'MDT', 'MRK', 'KORS', 'MHK', 'TAP', 'MDLZ', 'MNST', 'MYL', 'NWL', 'NWSA', 'NWS', 'NKE', 'JWN', 'ORLY', 'OMC', 'PDCO', 'PEP', 'PKI', 'PRGO', 'PFE', 'PM', 'RL', 'PCLN', 'PG', 'PHM', 'PVH', 'DGX', 'REGN', 'RAI', 'ROST', 'RCL', 'SNI', 'SIG', 'SJM', 'SNA', 'STJ', 'SWK', 'SPLS', 'SBUX', 'HOT', 'SYK', 'SYY', 'TGT', 'TGNA', 'THC', 'HSY', 'TMO', 'TIF', 'TWX', 'TWC', 'TJX', 'TSCO', 'TRIP', 'FOXA', 'FOX', 'TSN', 'UA', 'UNH', 'UHS', 'URBN', 'VFC', 'VAR', 'VRTX', 'VIAB', 'WMT', 'WBA', 'DIS', 'WAT', 'ANTM', 'WHR', 'WFM', 'WYN', 'WYNN', 'YUM', 'ZBH', 'ZTS'], 'Air': ['T', 'CTL', 'FTR', 'LVLT', 'VZ']}
 
 trade_serv = ("127.0.0.1", 8888)
-
 ALGO = "gps"
 
-# TODO: test and tweak buy and sell *eg. ticker*, updating and accounting
+with open("pass_key.txt", "r") as keyfile:
+    pass_key = keyfile.read().strip()
 
 
 def loadTLE(path):
@@ -375,7 +375,7 @@ def exec_trade(trade_json):
 
 def exec_buy(whichone):
     # actually buy shares on the market.
-    trade = {"pass_client": u"xxx"
+    trade = {"pass_client": passkey
              "contract": {"m_symbol": whichone,
                           "m_secType": "STK",
                           "m_exchange": "SMART",
@@ -384,6 +384,7 @@ def exec_buy(whichone):
                  "order": {"m_action": "BUY",
                            "m_totalQuantity": 1,
                            "m_orderType": "MKT",
+                           "m_lmtPrice": "MARKET",
                            "m_tif": "DAY",
                            "m_goodAfterTime": "",
                            "m_goodTillDate": ""
@@ -395,7 +396,7 @@ def exec_buy(whichone):
 
 def exec_sell(whichone):
     # actually sell on the market
-    trade = {"pass_client": u"xxx",
+    trade = {"pass_client": passkey,
              "contract": {"m_symbol": whichone,
                           "m_secType": "STK",
                           "m_exchange": "SMART",
@@ -404,6 +405,7 @@ def exec_sell(whichone):
                  "order": {"m_action": "SELL",
                            "m_totalQuantity": 1,
                            "m_orderType": "MKT",
+                           "m_lmtPrice": "MARKET",
                            "m_tif": "DAY",
                            "m_goodAfterTime": "",
                            "m_goodTillDate": ""
