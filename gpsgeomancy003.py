@@ -30,7 +30,7 @@ trade_serv = ("127.0.0.1", 8888)
 ALGO = "gps"
 
 with open("pass_key.txt", "r") as keyfile:
-    pass_key = keyfile.read().strip()
+    passkey = keyfile.read().strip()
 
 
 def loadTLE(path):
@@ -375,7 +375,7 @@ def exec_trade(trade_json):
 
 def exec_buy(whichone):
     # actually buy shares on the market.
-    trade = {"pass_client": passkey
+    trade = {"pass_client": passkey,
              "contract": {"m_symbol": whichone,
                           "m_secType": "STK",
                           "m_exchange": "SMART",
@@ -384,7 +384,7 @@ def exec_buy(whichone):
                  "order": {"m_action": "BUY",
                            "m_totalQuantity": 1,
                            "m_orderType": "MKT",
-                           "m_lmtPrice": "MARKET",
+                           "m_lmtPrice": "",
                            "m_tif": "DAY",
                            "m_goodAfterTime": "",
                            "m_goodTillDate": ""
@@ -405,7 +405,7 @@ def exec_sell(whichone):
                  "order": {"m_action": "SELL",
                            "m_totalQuantity": 1,
                            "m_orderType": "MKT",
-                           "m_lmtPrice": "MARKET",
+                           "m_lmtPrice": "",
                            "m_tif": "DAY",
                            "m_goodAfterTime": "",
                            "m_goodTillDate": ""
@@ -429,8 +429,8 @@ def whattodo(figure):
     else:
         action="buy"
     elemental=figdict[key][2]
-#    elemental="Earth"
-#    action="sell"
+    elemental="Fire"
+    action="sell"
     whichone=random.choice(company_dict[elemental])
 
     if action=="buy":
@@ -441,14 +441,13 @@ def whattodo(figure):
         print "Buy", whichone
         bought=Share(whichone)
         print "Price", bought.get_price()
-# do buy action
+# do buy action if we have da cash
         exec_buy(whichone)
 
     elif action=="sell":
         #choose a random from elemental dict
         if portfolio[elemental]:
             print portfolio
-            whichone=random.choice(list(portfolio[elemental]))
             # unless it is zero decrement it
             if portfolio[elemental][whichone]>0:
                 portfolio[elemental][whichone]-=1
@@ -473,7 +472,8 @@ def market_open():
 def main():
     """
     """
-    upped=0;
+    upped=0
+    flagged=0
     # What is Lat long of US stock exchange: 40.714353, -74.005973
     # Berlin here: 
     nyse = ephem.Observer()
@@ -484,13 +484,14 @@ def main():
 
     while True:
     # wait for stock exchange to open 
-#        if market_open():
-        if True:
-            upped+=10
+        if market_open() and flagged ==0 :
+#        if True:
+#            upped+=10
             date = datetime.datetime.now(pytz.timezone('US/Eastern')) # offset okay
-            date+= datetime.timedelta(0,upped)
+#            date+= datetime.timedelta(0,upped)
             nyse.date=date
             print nyse.date
+            flagged=1
             # we need to clear satdict
             satdict = {}
             while ("West" not in str(satdict.values()) and "East" not in str(satdict.values()) and "North" not in str(satdict.values()) and "South" not in str(satdict.values())): 
@@ -531,7 +532,9 @@ def main():
             whattodo(chosen)
 	    update()
             # update and print account details
-
+        elif market_open()==False:
+            flagged=0
+	time.sleep(10)
         
 if __name__ == '__main__':
     sys.exit(main())
