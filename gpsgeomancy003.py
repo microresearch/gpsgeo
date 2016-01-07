@@ -335,12 +335,14 @@ def drawit(listere):
                 print " O    ",
         print
 
-def drawfig(body):
+def drawfig(f,body):
     for part in body:
         if part==1:
-            print "O O   ",
+            #            print "O O   ",
+            f.write("O O   \n")
         else:
-            print " O    ",
+            #print " O    ",
+            f.write(" O    \n")
         print
 
 numeral=0
@@ -420,8 +422,11 @@ def update():
     print cash, portfolio
     print req_admxi.get_orders(ALGO) 
 
+trader_overhead=0
+
 def whattodo(figure):
     # convert list to string
+    # do we need to account for each transaction as well
     key=''.join(str(e) for e in figure)
     action=figdict[key][4]
     if "-" in action:
@@ -441,9 +446,11 @@ def whattodo(figure):
         print "Buy", whichone
         bought=Share(whichone)
         print "Price", bought.get_price()
-# do buy action if we have da cash
-        exec_buy(whichone)
-
+        # do buy action if we have da cash
+        cash = req_admxi.get_cash(ALGO)
+        if cash>(bought.get_price()+50+trader_overhead): # 50 just in case
+            exec_buy(whichone)
+            trader_overhead+=1
     elif action=="sell":
         #choose a random from elemental dict
         if portfolio[elemental]:
@@ -455,6 +462,7 @@ def whattodo(figure):
                 sold=Share(whichone)
                 print "Price", sold.get_price()
                 exec_sell(whichone)
+                trader_overhead+=1
             else:
                 print "No action taken"
     return (' '.join((action,whichone)))
@@ -524,9 +532,12 @@ def main():
                             house=total%12
                             chosen=allfigures[house]
 
-            # print the chosen figure and its interpretation
-            drawfig(chosen)
-            print lookfig(chosen)
+            # print the chosen figure and its interpretation to a file say called xxxxx
+            #''''''''''
+            f=open('xxxxx','w')
+            drawfig(f,chosen)
+            f.write(lookfig(chosen))
+            f.close()
 
             # buy or sell
             whattodo(chosen)
