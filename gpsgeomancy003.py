@@ -534,8 +534,10 @@ def main():
 
             # print the chosen figure and its interpretation to a file say called xxxxx
             #''''''''''
-            f=open('xxxxx','w')
+            f=open('/home/status/gps/illustration.txt','w')
             drawfig(f,chosen)
+            f.close()
+            f=open('/home/status/gps/status.txt','w')
             f.write(lookfig(chosen))
             f.close()
 
