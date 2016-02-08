@@ -434,8 +434,8 @@ def whattodo(figure):
     else:
         action="buy"
     elemental=figdict[key][2]
-    elemental="Fire"
-    action="sell"
+#    elemental="Fire"
+#    action="sell"
     whichone=random.choice(company_dict[elemental])
 
     if action=="buy":
@@ -448,7 +448,7 @@ def whattodo(figure):
         print "Price", bought.get_price()
         # do buy action if we have da cash
         cash = req_admxi.get_cash(ALGO)
-        if cash>(bought.get_price()+50+trader_overhead): # 50 just in case
+        if cash>(float(bought.get_price())+50+trader_overhead): # 50 just in case
             exec_buy(whichone)
             trader_overhead+=1
     elif action=="sell":
@@ -495,20 +495,20 @@ def main():
         if market_open() and flagged ==0 :
 #        if True:
 #            upped+=10
-            date = datetime.datetime.now(pytz.timezone('US/Eastern')) # offset okay
 #            date+= datetime.timedelta(0,upped)
-            nyse.date=date
-            print nyse.date
+#            print nyse.date
             flagged=1
             # we need to clear satdict
             satdict = {}
-            while ("West" not in str(satdict.values()) and "East" not in str(satdict.values()) and "North" not in str(satdict.values()) and "South" not in str(satdict.values())): 
+            while (("West" not in str(satdict.values())) or ("East" not in str(satdict.values())) or ("North" not in str(satdict.values())) or ("South" not in str(satdict.values()))): 
+                date = datetime.datetime.now(pytz.timezone('US/Eastern')) # offset okay
+                nyse.date=date
                 satdict = {}
                 satdict = makesatdict(nyse)
                 satdict = directionclassify(satdict)
                 chosenfour = selectsats(satdict)
                 #            print "waitin" - why does this fail to get all NSEW
-
+#	    print satdict
             mlist=domothers(chosenfour)
             dlist=dodaughters(mlist)
             nlist=donephews(mlist,dlist)
