@@ -435,10 +435,10 @@ def whattodo(figure):
     else:
         action="buy"
     elemental=figdict[key][2]
-#    elemental="Fire"
-#    action="buy"
+#    elemental="Earth"
+#    action="sell"
     whichone=random.choice(company_dict[elemental])
-
+    print action,whichone,elemental
     if action=="buy":
         if portfolio[elemental].has_key(whichone):
             portfolio[elemental][whichone]+=1
@@ -449,12 +449,13 @@ def whattodo(figure):
         print "Price", bought.get_price()
         # do buy action if we have da cash
         cash = req_admxi.get_cash(ALGO)
-        if cash>(float(bought.get_price())+trader_overhead): # 50 just in case
-            exec_buy(whichone)
-            trader_overhead+=1.0
+	if bought.get_price():
+            if cash>(float(bought.get_price())+trader_overhead): # 50 just in case
+                exec_buy(whichone)
+                trader_overhead+=1.0
     elif action=="sell":
         #choose a random from elemental dict
-        if portfolio[elemental]:
+        if portfolio[elemental].has_key(whichone):
             print portfolio
             # unless it is zero decrement it
             if portfolio[elemental][whichone]>0:
@@ -464,13 +465,14 @@ def whattodo(figure):
                 print "Price", sold.get_price()
                 exec_sell(whichone)
                 trader_overhead+=1.0
-            else:
-                print "No action taken"
+        else:
+            print "No action taken"
     return (' '.join((action,whichone)))
 
 
 def market_open():
     # returns True if NYSE is open (this does not work for holidays)
+#    return True
     ctime = datetime.datetime.now(pytz.timezone('US/Eastern'))
     chour = ctime.hour + (ctime.minute / 60.0)
     if (ctime.weekday() < 5) and (chour < 16) and (chour > 9.5):
