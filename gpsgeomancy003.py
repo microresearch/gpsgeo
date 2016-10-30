@@ -36,7 +36,12 @@ with open("pass_key.txt", "r") as keyfile:
 
 def loadTLE(path):
     """ Loads a TLE file and creates a list of satellites."""
-    f = urllib2.urlopen(path)
+    f = None
+    while f is None:
+        try:
+            f = urllib2.urlopen(path)
+        except:
+            pass
     satlist = []
     l1 = f.readline()
     while l1:
@@ -451,8 +456,11 @@ def whattodo(figure):
         cash = req_admxi.get_cash(ALGO)
 	if bought.get_price():
             if cash>(float(bought.get_price())+trader_overhead): # 50 just in case
-                exec_buy(whichone)
-                trader_overhead+=1.0
+		try:
+                    exec_buy(whichone)
+                    trader_overhead+=1.0
+		except:
+		    print "FAILED"
     elif action=="sell":
         #choose a random from elemental dict
         if portfolio[elemental].has_key(whichone):
@@ -463,8 +471,11 @@ def whattodo(figure):
                 print "Sell", whichone
                 sold=Share(whichone)
                 print "Price", sold.get_price()
-                exec_sell(whichone)
-                trader_overhead+=1.0
+		try:
+                    exec_sell(whichone)
+                    trader_overhead+=1.0
+		except:
+		    print "FAIL" 
         else:
             print "No action taken"
     return (' '.join((action,whichone)))
@@ -493,6 +504,7 @@ def main():
     nyse.long = np.deg2rad(-74.005973)
 
     #consult at specific auspicious time which is opening of NYSE!
+    #update()
 
     while True:
     # wait for stock exchange to open 
