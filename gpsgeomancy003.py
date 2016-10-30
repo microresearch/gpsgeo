@@ -445,35 +445,38 @@ def whattodo(figure):
     whichone=random.choice(company_dict[elemental])
     print action,whichone,elemental
     if action=="buy":
-        if portfolio[elemental].has_key(whichone):
-            portfolio[elemental][whichone]+=1
-        else:
-            portfolio.setdefault(elemental, {})[whichone] = 1
-        print "Buy", whichone
-        bought=Share(whichone)
-        print "Price", bought.get_price()
-        # do buy action if we have da cash
-        cash = req_admxi.get_cash(ALGO)
-	if bought.get_price():
-            if cash>(float(bought.get_price())+trader_overhead): # 50 just in case
-		try:
-                    exec_buy(whichone)
-                    trader_overhead+=1.0
-		except:
-		    print "FAILED"
+        print "Trying to buy", whichone
+        try:
+            bought=Share(whichone)
+            print "Price", bought.get_price()
+            # do buy action if we have da cash
+            cash = req_admxi.get_cash(ALGO)
+            if bought.get_price():
+                if cash>(float(bought.get_price())+trader_overhead): # 50 just in case
+                    try:
+                        exec_buy(whichone)
+                        trader_overhead+=1.0
+                        if portfolio[elemental].has_key(whichone):
+                            portfolio[elemental][whichone]+=1
+                        else:
+                            portfolio.setdefault(elemental, {})[whichone] = 1
+                    except:
+                        print "FAILED"
+            except:
+                print "FAILED"
     elif action=="sell":
         #choose a random from elemental dict
         if portfolio[elemental].has_key(whichone):
             print portfolio
             # unless it is zero decrement it
-            if portfolio[elemental][whichone]>0:
-                portfolio[elemental][whichone]-=1
-                print "Sell", whichone
-                sold=Share(whichone)
-                print "Price", sold.get_price()
+                print "Trying to sell", whichone
+#                sold=Share(whichone)
+#                print "Price", sold.get_price()
 		try:
                     exec_sell(whichone)
                     trader_overhead+=1.0
+                    if portfolio[elemental][whichone]>0:
+                        portfolio[elemental][whichone]-=1
 		except:
 		    print "FAIL" 
         else:
